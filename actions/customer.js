@@ -448,3 +448,53 @@ export const getNewsById = async (res, newsId) => {
   })
   res.data = newsObj
 }
+
+export const getStatisticsForPostCard = async (res, postId) => {
+
+  let postObj = await post.findOne({
+    where: {
+      id: postId
+    },
+    order: [['id', 'DESC']],
+    include: [
+      {
+        model: comment,
+        as: 'comments',
+        duplicating: false,
+        include: [
+          {
+            model: customer,
+            as: 'customer',
+            duplicating: false,
+            include: [
+              {
+                model: department,
+                as: 'department',
+                duplicating: false
+              }
+            ],
+          }
+        ],
+      }
+    ],
+  })
+
+  let allComments = postObj.comments
+
+  allComments = allComments.map(m => m.customer.department)
+
+  let newList = groupBy(allComments, 'department_name')
+
+  let statistics = []
+
+  newList.forEach(element => {
+    let record = {
+      department_name: element.type,
+      count: element.data.length
+    }
+    statistics.push(record)
+  });
+
+  res.data = statistics
+  return
+}

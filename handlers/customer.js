@@ -1,5 +1,8 @@
 import Result from 'result'
-import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements, getPostCard, setCustomerVote, getAllNews, getNewsById } from 'actions/customer'
+import {
+  getAllPosts, createPost, getCategories, roles, majors, departments, achievements, getPostCard, setCustomerVote, getAllNews, getNewsById,
+  getStatisticsForPostCard
+} from 'actions/customer'
 import express from "express"
 
 
@@ -134,7 +137,7 @@ router.get("/profile/life", async (req, res, next) => {
       {
         "id": "/post/5",
         "icon": "mdi-playlist-star",
-        "title": "Вы предлжили идею \"В воскресенье планируется провести мастер класс по выпечке кексов\""
+        "title": "Вы предложили идею \"В воскресенье планируется провести мастер класс по выпечке кексов\""
       },
       {
         "id": "/post/5",
@@ -144,8 +147,23 @@ router.get("/profile/life", async (req, res, next) => {
       {
         "id": "/post/6",
         "icon": "mdi-playlist-star",
-        "title": "Вы предлжили идею \"Необходимо всех обеспечить вентиляторами\""
-      }
+        "title": "Вы предложили идею \"Необходимо всех обеспечить вентиляторами\""
+      },
+      {
+        "id": "/post/19",
+        "icon": "mdi-playlist-star",
+        "title": "Вы предложили идею  \"Может устроим зону отдыха в офисе? Как считаете?\""
+      },
+      {
+        "id": "/post/8",
+        "icon": "mdi-playlist-star",
+        "title": "Вы предложили идею  \"Идем на Ергаки\""
+      },
+      {
+        "id": "/post/21",
+        "icon": "mdi-heart-outline",
+        "title": "Вы оценили идею \"Предлагаю Новый год отметить поездкой на лыжню базу\""
+      },
     ]
 
     result.data.icons = [
@@ -214,5 +232,277 @@ router.get("/news/:id", async (req, res, next) => {
     next(error)
   }
 })
+
+router.get("/post/:id/statistics", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getStatisticsForPostCard(result, req.params.id)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/top", async (req, res, next) => {
+  try {
+    var result = new Result()
+
+    result.data = [
+      [
+        {
+          "rank": 1,
+          "user": "/user/5",
+          "fullName": "Байкалов Илья",
+          "level": 5,
+          "exp": 322,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 12
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 7
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 14
+            }
+          ]
+        },{
+          "rank": 2,
+          "user": "/user/4",
+          "fullName": "Соколовский Никита",
+          "level": 4,
+          "exp": 298,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 11
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 6
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 10
+            }
+          ]
+        },{
+          "rank": 3,
+          "user": "/user/3",
+          "fullName": "Фабричкина Мария",
+          "level": 3,
+          "exp": 268,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 9
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 7
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 1
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 7
+            }
+          ]
+        },{
+          "rank": 4,
+          "user": "/user/6",
+          "fullName": "Телков Андрей",
+          "level": 3,
+          "exp": 259,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 6
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 4
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 1
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 7
+            }
+          ]
+        },{
+          "rank": 5,
+          "user": "/user/12",
+          "fullName": "Богачев Иван",
+          "level": 2,
+          "exp": 183,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 5
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 3
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 0
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 5
+            }
+          ]
+        },{
+          "rank": 6,
+          "user": "/user/8",
+          "fullName": "Сидоров Алексей",
+          "level": 2,
+          "exp": 180,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 4
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 3
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 0
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "rank": 7,
+          "user": "/user/9",
+          "fullName": "Шишкова Ангелина",
+          "level": 2,
+          "exp": 174,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 4
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 0
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "rank": 8,
+          "user": "/user/10",
+          "fullName": "Карамчак Светлана",
+          "level": 2,
+          "exp": 154,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 1
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 5
+            }
+          ]
+        },
+        {
+          "rank": 9,
+          "user": "/user/11",
+          "fullName": "Сорока Евгения",
+          "level": 1,
+          "exp": 98,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 1
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 3
+            }
+          ]
+        },
+        {
+          "rank": 10,
+          "user": "/user/7",
+          "fullName": "Иванов Иван",
+          "level": 1,
+          "exp": 95,
+          "achieve": [
+            {
+              "icon": "mdi-text-box-plus-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-comment-processing-outline",
+              "value": 2
+            },
+            {
+              "icon": "mdi-trophy-outline",
+              "value": 1
+            },
+            {
+              "icon": "mdi-clock-time-four-outline",
+              "value": 2
+            }
+          ]
+        }
+      ]
+    ]
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
 
 module.exports = router
