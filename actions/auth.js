@@ -175,7 +175,10 @@ export const login = async (res, data) => {
       res.data = {
         token: tokenNew,
         refreshToken: updateToken.refreshToken,
-        customer: user
+        customer: {
+          ...user,
+          fio: user.surname + " " + user.name[0] + ". " + user.patronymic[0] + "."
+        }
       }
     } else {
 

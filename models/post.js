@@ -42,6 +42,11 @@ module.exports = (sequelize, Sequelize) => {
     customer_id: {
       allowNull: true,
       type: Sequelize.INTEGER
+    },
+
+    tags: {
+      allowNull: true,
+      type: Sequelize.ARRAY(Sequelize.TEXT)
     }
 
   }, { timestamps: false })

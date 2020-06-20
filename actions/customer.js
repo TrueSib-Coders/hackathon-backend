@@ -82,19 +82,31 @@ export const createPost = async (res, customer_id, data) => {
   try {
     transaction = await sequelize.transaction()
 
-    const { title, text, image } = data
+    const { title, text, image, tags } = data
 
     let payload = {
       title: title,
       text: text,
       image_link: image,
       date: moment(),
-      customer_id: customer_id
+      rating: 0,
+      customer_id: customer_id,
+      tags: tags
     }
-    console.log(4422, payload);
+    
+    let postObject = await post.create(payload, { transaction })
 
-    let postObject = await post.create({ payload }, { transaction })
+    let categoryList = await categories.findAll({
+      where: {
+        id: {
+          [Op.in]: payload.tags
+        }
+      }
+    })
+    categoryList = dataToJson(categoryList)
 
+    delete postObject.tags
+    postObject.tags = categoryList
 
     res.data = postObject
     await transaction.commit()
