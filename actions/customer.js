@@ -26,17 +26,31 @@ export const getAllPosts = async (res, data, userId) => {
         order: [['date', 'DESC']]
       })
 
-    //Доделать
+    //Доделать по лайкам
     if (sort == 'popular')
       posts = await post.findAll({
-        order: [['id', 'DESC']]
+        order: [['rating', 'DESC']]
       })
 
 
-    //Доделать
+    //Доделать по отзывав
     if (sort == 'discussed')
       posts = await post.findAll({
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        include: [
+          {
+            model: comment,
+            as: 'comments',
+            duplicating: false,
+            include: [
+              {
+                model: customer,
+                as: 'customer',
+                duplicating: false
+              }
+            ],
+          }
+        ],
       })
 
     posts = dataToJson(posts)
@@ -53,21 +67,21 @@ export const getAllPosts = async (res, data, userId) => {
     let allvotes = await customer_post.findAll({})
     allvotes = dataToJson(allvotes)
 
-    posts.forEach(post => {
-      if (post.customer_id) {
+    posts.forEach(postElem => {
+      if (postElem.customer_id) {
         customers.forEach(user => {
-          if (user.id == post.customer_id) {
-            post.author = user.surname + " " + user.name[0] + ". " + user.patronymic[0] + "."
-            post.authorId = "/user/" + user.id
+          if (user.id == postElem.customer_id) {
+            postElem.author = user.surname + " " + user.name[0] + ". " + user.patronymic[0] + "."
+            postElem.authorId = "/user/" + user.id
           }
         });
-        delete post.customer_id
-        post.image = post.image_link
-        delete post.image_link
+        delete postElem.customer_id
+        postElem.image = post.image_link
+        delete postElem.image_link
 
         let currentList = []
 
-        post.tags.forEach(element => {
+        postElem.tags.forEach(element => {
           categoryList.forEach(categoryDB => {
 
 
@@ -77,31 +91,31 @@ export const getAllPosts = async (res, data, userId) => {
           });
         });
 
-        delete post.tags
-        post.tags = currentList
+        delete postElem.tags
+        postElem.tags = currentList
 
-        if (post.department_id) {
+        if (postElem.department_id) {
           departmentList.forEach(departmentDB => {
-            if (post.department_id == departmentDB.id) {
-              delete post.department_id
-              post.department_id = departmentDB
+            if (postElem.department_id == departmentDB.id) {
+              delete postElem.department_id
+              postElem.department_id = departmentDB
             }
           });
         }
 
-        post.comments = Math.floor(Math.random() * (50 - 2)) + 2;
+        let commentLenght = postElem.comments.length
+        postElem.comments = commentLenght
 
-        post.vote = null
+        postElem.vote = null
         allvotes.forEach(vote => {
-          if (vote.customer_id == userId && vote.post_id == post.id) {
-            post.vote = vote.vote
+          if (vote.customer_id == userId && vote.post_id == postElem.id) {
+            postElem.vote = vote.vote
           }
         });
-
-
-
       }
     });
+
+    posts.sort((a, b) => b.comments - a.comments);
 
     res.data = posts
     await transaction.commit()
@@ -360,6 +374,7 @@ export const setCustomerVote = async (res, customer_id, data, postId) => {
     let updateVote = await customer_post.findOne({ where: { post_id: postId } })
 
     await updateVote.update({ customer_id: customer_id, post_id: postId, vote: vote }, { transaction })
+
 
     res.data = updateVote
     await transaction.commit()
