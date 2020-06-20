@@ -14,7 +14,7 @@ export const getAllPosts = async (res, data) => {
     transaction = await sequelize.transaction()
 
     //пока без поиска 
-    const { sort, department } = data
+    const { sort } = data
 
     let posts = []
 
@@ -47,6 +47,13 @@ export const getAllPosts = async (res, data) => {
     let customers = await customer.findAll({})
     customers = dataToJson(customers)
 
+    let categoryList = await categories.findAll({})
+    categoryList = dataToJson(categoryList)
+
+    let departmentList = await department.findAll({})
+    departmentList = dataToJson(departmentList)
+
+
     posts.forEach(post => {
       if (post.customer_id) {
         customers.forEach(user => {
@@ -59,9 +66,31 @@ export const getAllPosts = async (res, data) => {
         post.image = post.image_link
         delete post.image_link
 
-        post.comments = 12
-        post.vote = true
-        post.tags = ["Еда", "Сотрудники", "Отдых"]
+        post.comments = Math.floor(Math.random() * (50 - 2)) + 2;
+        post.vote = Math.random() >= 0.5
+
+        if (post.tags) {
+          let currentList = []
+          post.tags.forEach(element => {
+            categoryList.forEach(categoryDB => {
+              if (element == categoryDB.id) {
+                currentList.push(categoryDB)
+              }
+            });
+          });
+          delete post.tags
+          post.tags = currentList
+        }
+
+        if (post.department_id) {
+          departmentList.forEach(departmentDB => {
+            if (post.department_id == departmentDB.id) {
+              delete post.tags
+              post.department_id = departmentDB
+            }
+          });
+        }
+
       }
     });
 
