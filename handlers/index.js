@@ -9,7 +9,7 @@ function api(server, passport) {
 
   server.use("/api/v1", auth)
 
-  server.use("/api/v1/customer", authorize(false, ROLES.User), customer)
+  server.use("/api/v1/customer", authorize(false, ROLES.User, ROLES.Admin), customer)
 
   server.use("/api/v1/admin", authorize(false, ROLES.Admin), admin)
 

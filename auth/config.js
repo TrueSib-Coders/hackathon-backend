@@ -35,8 +35,9 @@ export const checkRoles = (...role) => {
 
         console.log(111, userRole);
         console.log(333, role);
-
-        if (userRole.role_name == role) {
+        console.log(444, role.includes(userRole.role_name));
+        
+        if (role.includes(userRole.role_name)) {
           return next()
         } else {
           return next(new ForbiddenError())

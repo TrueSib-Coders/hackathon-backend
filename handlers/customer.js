@@ -1,5 +1,5 @@
 import Result from 'result'
-import { } from 'actions/customer'
+import { getAllPosts } from 'actions/customer'
 import express from "express"
 
 
@@ -9,6 +9,17 @@ router.get("/test", async (req, res, next) => {
   try {
     var result = new Result()
     result.result = "Ура!"
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.post("/posts", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getAllPosts(result, req.body)
     res.status(result.status).send(result)
   }
   catch (error) {

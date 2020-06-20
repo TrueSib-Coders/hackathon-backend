@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/test", async (req, res, next) => {
   try {
     var result = new Result()
-    result.result = "test"
+    result.data = "test"
     res.status(result.status).send(result)
   }
   catch (error) {

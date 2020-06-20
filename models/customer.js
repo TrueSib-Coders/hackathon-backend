@@ -36,6 +36,7 @@ module.exports = (sequelize, Sequelize) => {
     experience: {
       type: Sequelize.INTEGER,
       allowNull: false,
+      defaultValue: 0
     },
 
     major_id: {

@@ -16,7 +16,7 @@ module.exports = (sequelize, Sequelize) => {
     },
 
     text: {
-      type: Sequelize.STRING,
+      type: Sequelize.TEXT,
       allowNull: false,
     },
 
@@ -40,12 +40,8 @@ module.exports = (sequelize, Sequelize) => {
     },
 
     customer_id: {
-      allowNull: false,
-      type: Sequelize.INTEGER,
-      references: {
-        model: "customer",
-        key: "id"
-      }
+      allowNull: true,
+      type: Sequelize.INTEGER
     }
 
   }, { timestamps: false })
