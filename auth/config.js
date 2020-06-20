@@ -22,6 +22,9 @@ export const checkRoles = (...role) => {
       if (!role) {
         return next()
       }
+      if (!role.length) {
+        return next()
+      }
 
       if (!req.user) {
         return next(new (UnauthorizedError()))
@@ -31,8 +34,9 @@ export const checkRoles = (...role) => {
         let userRole = req.user.role
 
         console.log(111, userRole);
+        console.log(333, role);
 
-        if (userRole.role_name == 'Пользователь' || userRole.role_name == 'Администратор') {
+        if (userRole.role_name == role) {
           return next()
         } else {
           return next(new ForbiddenError())
