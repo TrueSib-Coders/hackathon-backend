@@ -1,6 +1,6 @@
 class Result {
   constructor() {
-    this.result = null
+    this.data = null
     this.error = null
     this.pagination = null
     this.status = 200
@@ -9,6 +9,12 @@ class Result {
   setUnknownError() {
     this.status = 404
     this.error = { message: "Данные не найдены" }
+    return this
+  }
+
+    setNotCorrectAuth() {
+    this.status = 203
+    this.error = { message: "Неверный логин или пароль" }
     return this
   }
 

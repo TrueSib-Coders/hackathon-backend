@@ -15,11 +15,11 @@ export const roles = async (res) => {
 
     let roles = await role.findAll({})
     if(!roles){
-      res.result = []
+      res.data = []
       return
     }
 
-    res.result = roles
+    res.data = roles
     await transaction.commit()
     return
   }
@@ -38,11 +38,11 @@ export const majors = async (res) => {
 
     let majors = await major.findAll({})
     if(!majors){
-      res.result = []
+      res.data = []
       return
     }
 
-    res.result = majors
+    res.data = majors
     await transaction.commit()
     return
   }
@@ -61,11 +61,11 @@ export const departments = async (res) => {
 
     let departments = await department.findAll({})
     if(!departments){
-      res.result = []
+      res.data = []
       return
     }
 
-    res.result = departments
+    res.data = departments
     await transaction.commit()
     return
   }
@@ -84,11 +84,11 @@ export const achievements = async (res) => {
 
     let achievements = await achievement.findAll({})
     if(!achievements){
-      res.result = []
+      res.data = []
       return
     }
 
-    res.result = achievements
+    res.data = achievements
     await transaction.commit()
     return
   }

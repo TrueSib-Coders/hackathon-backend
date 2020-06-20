@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import uuidv4 from 'uuid/v4'
 import logger from 'logger'
-import { NotFoundError, UnauthorizedError, ForbiddenError } from 'handle-error'
+import { NotFoundError, UnauthorizedError, ForbiddenError, setNotCorrectAuth } from 'handle-error'
 import moment from "moment"
 import { dataToJson } from 'helpers'
 
@@ -129,7 +129,7 @@ export const login = async (res, data) => {
     })
 
     if (!user) {
-      throw new UnauthorizedError('Неверный логин или пароль')
+      return res.setNotCorrectAuth().setErrorMessage("Неверный логин или пароль")
     }
     console.log(1111, dataToJson(user));
 
@@ -159,14 +159,14 @@ export const login = async (res, data) => {
       user.nextLevelExperience = 400
       delete user.experience
 
-      res.result = {
+      res.data = {
         token: tokenNew,
         refreshToken: updateToken.refreshToken,
         customer: user
       }
     } else {
 
-      throw new UnauthorizedError("Неверный логин или пароль")
+      return res.setNotCorrectAuth().setErrorMessage("Неверный логин или пароль")
     }
 
     await transaction.commit()
