@@ -27,4 +27,16 @@ router.post("/posts", async (req, res, next) => {
   }
 })
 
+router.put("/posts", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getAllPosts(result, req.body)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+
 module.exports = router

@@ -51,13 +51,14 @@ export const getAllPosts = async (res, data) => {
       if (post.customer_id) {
         customers.forEach(user => {
           if (user.id == post.customer_id) {
-            post.author = user.name + " " + user.surname[0] + ". " + user.patronymic[0] + "."
+            post.author = user.surname + " " + user.name[0] + ". " + user.patronymic[0] + "."
             post.authorId = "/user/" + user.id
           }
         });
         delete post.customer_id
         post.image = post.image_link
         delete post.image_link
+
         post.comments = 12
         post.vote = true
         post.tags = ["Еда", "Сотрудники", "Отдых"]

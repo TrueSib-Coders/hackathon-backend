@@ -29,7 +29,7 @@ module.exports = (sequelize, Sequelize) => {
 
     vote: {
       type: Sequelize.BOOLEAN,
-      allowNull: false
+      allowNull: true
     }
 
   }, { timestamps: false })

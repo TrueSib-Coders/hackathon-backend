@@ -97,6 +97,20 @@ exports.refreshToken = async (body) => {
   return result
 }
 
+let LEVELS = [14, 39, 99, 199, 349, 499, 699, 999];
+
+function calculationLevel(experience) {
+  let expToNextLvl = LEVELS.filter(level => experience < level)[0];
+  let nextLevel = expToNextLvl ? LEVELS.indexOf(expToNextLvl) + 1 : 10;
+  let currLevel = nextLevel - 1;
+
+  return {
+    level: currLevel + 1,
+    exp: experience,
+    nextLevelExp: expToNextLvl ? expToNextLvl + 1 : 10
+  };
+}
+
 export const login = async (res, data) => {
   let transaction
   try {
@@ -154,10 +168,9 @@ export const login = async (res, data) => {
       delete user.role_id
       delete user.major_id
       delete user.department_id
-      user.level = 2
-      user.remainedExperience = 400 - user.experience
-      user.nextLevelExperience = 400
+      let experience = calculationLevel(user.experience)
       delete user.experience
+      user.experience = experience
 
       res.data = {
         token: tokenNew,
