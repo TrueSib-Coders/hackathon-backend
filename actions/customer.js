@@ -1,5 +1,5 @@
 import logger from 'logger'
-import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement } from 'models'
+import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement, customer_post } from 'models'
 import { NotFoundError, CustomError } from 'handle-error'
 import moment from "moment"
 import { dataToJson, deleteFile } from 'helpers'
@@ -8,7 +8,7 @@ import { getBaseUrl } from 'utils/'
 
 const Op = Sequelize.Op;
 
-export const getAllPosts = async (res, data) => {
+export const getAllPosts = async (res, data, userId) => {
   let transaction
   try {
     transaction = await sequelize.transaction()
@@ -53,6 +53,8 @@ export const getAllPosts = async (res, data) => {
     let departmentList = await department.findAll({})
     departmentList = dataToJson(departmentList)
 
+    let allvotes = await customer_post.findAll({})
+    allvotes = dataToJson(allvotes)
 
     posts.forEach(post => {
       if (post.customer_id) {
@@ -65,9 +67,6 @@ export const getAllPosts = async (res, data) => {
         delete post.customer_id
         post.image = post.image_link
         delete post.image_link
-
-        post.comments = Math.floor(Math.random() * (50 - 2)) + 2;
-        post.vote = Math.random() >= 0.5
 
         if (post.tags) {
           let currentList = []
@@ -90,6 +89,17 @@ export const getAllPosts = async (res, data) => {
             }
           });
         }
+
+        post.comments = Math.floor(Math.random() * (50 - 2)) + 2;
+
+        post.vote = null
+        allvotes.forEach(vote => {
+          if (vote.customer_id == userId && vote.post_id == post.id) {
+            post.vote = vote.vote
+          }
+        });
+
+
 
       }
     });

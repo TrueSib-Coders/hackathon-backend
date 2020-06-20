@@ -19,7 +19,7 @@ router.get("/test", async (req, res, next) => {
 router.post("/posts", async (req, res, next) => {
   try {
     var result = new Result()
-    await getAllPosts(result, req.body)
+    await getAllPosts(result, req.body, req.user.id)
     res.status(result.status).send(result)
   }
   catch (error) {
