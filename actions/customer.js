@@ -1,5 +1,5 @@
 import logger from 'logger'
-import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement, customer_post, comment } from 'models'
+import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement, customer_post, comment, news } from 'models'
 import moment from "moment"
 import { dataToJson } from 'helpers'
 
@@ -431,4 +431,20 @@ export const setCustomerVote = async (res, customer_id, data, postId) => {
     }
     throw error
   }
+}
+
+export const getAllNews = async (res) => {
+  let newsList = await news.findAll({
+    attributes: { exclude: ['description'] }
+  })
+  res.data = newsList
+}
+
+export const getNewsById = async (res, newsId) => {
+  let newsObj = await news.findOne({
+    where: {
+      id: newsId
+    }
+  })
+  res.data = newsObj
 }

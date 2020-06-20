@@ -1,5 +1,5 @@
 import Result from 'result'
-import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements, getPostCard, setCustomerVote } from 'actions/customer'
+import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements, getPostCard, setCustomerVote, getAllNews, getNewsById } from 'actions/customer'
 import express from "express"
 
 
@@ -115,10 +115,40 @@ router.put("/post/:id/vote", async (req, res, next) => {
   }
 })
 
-router.get("/profile/icons", async (req, res, next) => {
+router.get("/profile/life", async (req, res, next) => {
   try {
     var result = new Result()
-    result.data = [
+
+    result.data = {}
+    result.data.life = [
+      {
+        "id": "/post/6",
+        "icon": "mdi-heart-outline",
+        "title": "Вы поддержали идею \"В воскресенье планируется провести мастер класс по выпечке кексов\""
+      },
+      {
+        "id": "/post/6",
+        "icon": "mdi-comment-check-outline",
+        "title": "Вы приняли участие в обсуждении идеи \"В воскресенье планируется провести мастер класс по выпечке кексов\""
+      },
+      {
+        "id": "/post/5",
+        "icon": "mdi-playlist-star",
+        "title": "Вы предлжили идею \"В воскресенье планируется провести мастер класс по выпечке кексов\""
+      },
+      {
+        "id": "/post/5",
+        "icon": "mdi-heart-outline",
+        "title": "Вы оценили идею \"В воскресенье планируется провести мастер класс по выпечке кексов\""
+      },
+      {
+        "id": "/post/6",
+        "icon": "mdi-playlist-star",
+        "title": "Вы предлжили идею \"Необходимо всех обеспечить вентиляторами\""
+      }
+    ]
+
+    result.data.icons = [
       {
         "icon": "mdi-text-box-plus-outline",
         "count": 12,
@@ -156,6 +186,28 @@ router.get("/profile/icons", async (req, res, next) => {
         "description": "за неделю"
       }
     ]
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/news", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getAllNews(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/news/:id", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getNewsById(result, req.params.id)
     res.status(result.status).send(result)
   }
   catch (error) {
