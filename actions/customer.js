@@ -17,19 +17,61 @@ export const getAllPosts = async (res, data, userId) => {
 
     if (!sort) {
       posts = await post.findAll({
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        include: [
+          {
+            model: comment,
+            as: 'comments',
+            duplicating: false,
+            include: [
+              {
+                model: customer,
+                as: 'customer',
+                duplicating: false
+              }
+            ],
+          }
+        ],
       })
     }
 
     if (sort == 'new')
       posts = await post.findAll({
-        order: [['date', 'DESC']]
+        order: [['date', 'DESC']],
+        include: [
+          {
+            model: comment,
+            as: 'comments',
+            duplicating: false,
+            include: [
+              {
+                model: customer,
+                as: 'customer',
+                duplicating: false
+              }
+            ],
+          }
+        ],
       })
 
     //Доделать по лайкам
     if (sort == 'popular')
       posts = await post.findAll({
-        order: [['rating', 'DESC']]
+        order: [['rating', 'DESC']],
+        include: [
+          {
+            model: comment,
+            as: 'comments',
+            duplicating: false,
+            include: [
+              {
+                model: customer,
+                as: 'customer',
+                duplicating: false
+              }
+            ],
+          }
+        ],
       })
 
 
@@ -103,6 +145,7 @@ export const getAllPosts = async (res, data, userId) => {
           });
         }
 
+
         let commentLenght = postElem.comments.length
         postElem.comments = commentLenght
 
@@ -115,7 +158,9 @@ export const getAllPosts = async (res, data, userId) => {
       }
     });
 
-    posts.sort((a, b) => b.comments - a.comments);
+    if (sort == 'discussed') {
+      posts.sort((a, b) => b.comments - a.comments);
+    }
 
     res.data = posts
     await transaction.commit()
