@@ -154,22 +154,16 @@ export const login = async (res, data) => {
       delete user.role_id
       delete user.major_id
       delete user.department_id
+      user.level = 2
+      user.remainedExperience = 400 - user.experience
+      user.nextLevelExperience = 400
+      delete user.experience
 
       res.result = {
         token: tokenNew,
         refreshToken: updateToken.refreshToken,
-        /*         customer: {
-                  id: user.id,
-                  name: user.name,
-                  surname: user.surname,
-                  role: role,
-                  major: major,
-                  department: department,
-                } */
         customer: user
       }
-      console.log(11111, res);
-
     } else {
 
       throw new UnauthorizedError("Неверный логин или пароль")
@@ -189,5 +183,4 @@ export const login = async (res, data) => {
     })
     throw error
   }
-  return
 }

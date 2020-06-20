@@ -6,7 +6,6 @@ import { dataToJson, deleteFile } from 'helpers'
 import Result from 'result'
 import { getBaseUrl } from 'utils/'
 
-const fs = require("fs");
 const Op = Sequelize.Op;
 
 export const roles = async (res) => {
@@ -83,7 +82,7 @@ export const achievements = async (res) => {
   try {
     transaction = await sequelize.transaction() 
 
-    let achievements = await department.findAll({})
+    let achievements = await achievement.findAll({})
     if(!achievements){
       res.result = []
       return
