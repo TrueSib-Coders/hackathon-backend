@@ -44,6 +44,11 @@ module.exports = (sequelize, Sequelize) => {
       type: Sequelize.INTEGER
     },
 
+    department_id: {
+      allowNull: true,
+      type: Sequelize.INTEGER
+    },
+
     tags: {
       allowNull: true,
       type: Sequelize.ARRAY(Sequelize.TEXT)

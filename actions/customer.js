@@ -1,5 +1,5 @@
 import logger from 'logger'
-import { Sequelize, sequelize, post, customer, categories } from 'models'
+import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement } from 'models'
 import { NotFoundError, CustomError } from 'handle-error'
 import moment from "moment"
 import { dataToJson, deleteFile } from 'helpers'
@@ -82,7 +82,7 @@ export const createPost = async (res, customer_id, data) => {
   try {
     transaction = await sequelize.transaction()
 
-    const { title, text, image, tags } = data
+    const { title, text, image, tags, department_id } = data
 
     let payload = {
       title: title,
@@ -91,10 +91,13 @@ export const createPost = async (res, customer_id, data) => {
       date: moment(),
       rating: 0,
       customer_id: customer_id,
-      tags: tags
+      tags: tags,
+      department_id: department_id
     }
-    
+
     let postObject = await post.create(payload, { transaction })
+
+    postObject = dataToJson(postObject)
 
     let categoryList = await categories.findAll({
       where: {
@@ -104,6 +107,18 @@ export const createPost = async (res, customer_id, data) => {
       }
     })
     categoryList = dataToJson(categoryList)
+
+    if (department_id) {
+
+      let departmentObj = await department.findOne({ where: { id: department_id } })
+
+      postObject.department = {
+        id: department_id,
+        department_name: departmentObj.department_name
+      }
+
+      delete postObject.department_id
+    }
 
     delete postObject.tags
     postObject.tags = categoryList
@@ -145,4 +160,96 @@ export const getCategories = async (res) => {
   res.data = newList
 
   return
+}
+
+export const roles = async (res) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    let roles = await role.findAll({})
+    if (!roles) {
+      res.data = []
+      return
+    }
+
+    res.data = roles
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
+}
+
+export const majors = async (res) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    let majors = await major.findAll({})
+    if (!majors) {
+      res.data = []
+      return
+    }
+
+    res.data = majors
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
+}
+
+export const departments = async (res) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    let departments = await department.findAll({})
+    if (!departments) {
+      res.data = []
+      return
+    }
+
+    res.data = departments
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
+}
+
+export const achievements = async (res) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    let achievements = await achievement.findAll({})
+    if (!achievements) {
+      res.data = []
+      return
+    }
+
+    res.data = achievements
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
 }

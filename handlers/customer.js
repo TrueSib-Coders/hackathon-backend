@@ -1,5 +1,5 @@
 import Result from 'result'
-import { getAllPosts, createPost, getCategories } from 'actions/customer'
+import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements } from 'actions/customer'
 import express from "express"
 
 
@@ -52,5 +52,48 @@ router.get("/categories", async (req, res, next) => {
   }
 })
 
+router.get("/roles", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await roles(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/majors", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await majors(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/departments", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await departments(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/achievements", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await achievements(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
 
 module.exports = router
