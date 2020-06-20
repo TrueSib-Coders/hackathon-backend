@@ -24,4 +24,5 @@ export const ROLES = new Enum({
   User: 'Пользователь'
 })
 
+
 export const MODERATORS = [ROLES.Admin, ROLES.User]

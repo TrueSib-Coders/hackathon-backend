@@ -6,7 +6,10 @@
   "scripts": {
     "local": "cross-env NODE_ENV=local nodemon index.js",
     "dev": "cross-env NODE_ENV=development node index.js",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "migration:undo:dev": "cross-env MIG_ENV=development npx sequelize-cli db:migrate:undo",
+    "migration:add": "npx sequelize-cli migration:create --name",
+    "migrate:dev": "cross-env MIG_ENV=development npx sequelize-cli db:migrate"
   },
   "author": "",
   "license": "ISC",

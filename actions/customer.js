@@ -1,5 +1,5 @@
 import logger from 'logger'
-import { Sequelize, sequelize, post, customer } from 'models'
+import { Sequelize, sequelize, post, customer, categories } from 'models'
 import { NotFoundError, CustomError } from 'handle-error'
 import moment from "moment"
 import { dataToJson, deleteFile } from 'helpers'
@@ -75,4 +75,62 @@ export const getAllPosts = async (res, data) => {
     }
     throw error
   }
+}
+
+export const createPost = async (res, customer_id, data) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    const { title, text, image } = data
+
+    let payload = {
+      title: title,
+      text: text,
+      image_link: image,
+      date: moment(),
+      customer_id: customer_id
+    }
+    console.log(4422, payload);
+
+    let postObject = await post.create({ payload }, { transaction })
+
+
+    res.data = postObject
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
+}
+
+function groupBy(arr, key) {
+  var newArr = [],
+    types = {},
+    newItem, i, j, cur;
+  for (i = 0, j = arr.length; i < j; i++) {
+    cur = arr[i];
+    if (!(cur[key] in types)) {
+      types[cur[key]] = { type: cur[key], data: [] };
+      newArr.push(types[cur[key]]);
+    }
+    types[cur[key]].data.push(cur);
+  }
+  return newArr;
+}
+
+export const getCategories = async (res) => {
+
+  let categoryList = await categories.findAll({})
+  categoryList = dataToJson(categoryList)
+
+  let newList = groupBy(categoryList, 'parentCode')
+
+  res.data = newList
+
+  return
 }
