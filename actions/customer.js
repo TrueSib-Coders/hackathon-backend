@@ -118,7 +118,7 @@ export const getAllPosts = async (res, data, userId) => {
           }
         });
         delete postElem.customer_id
-        postElem.image = post.image_link
+        postElem.image = postElem.image_link
         delete postElem.image_link
 
         let currentList = []
