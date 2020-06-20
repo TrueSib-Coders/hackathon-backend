@@ -1,5 +1,5 @@
 import Result from 'result'
-import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements } from 'actions/customer'
+import { getAllPosts, createPost, getCategories, roles, majors, departments, achievements, getPostCard, setCustomerVote } from 'actions/customer'
 import express from "express"
 
 
@@ -30,9 +30,6 @@ router.post("/posts", async (req, res, next) => {
 router.post("/post", async (req, res, next) => {
   try {
     var result = new Result()
-    console.log(111, req.user);
-    console.log(111, req.customer);
-
     await createPost(result, req.user.id, req.body)
     res.status(result.status).send(result)
   }
@@ -89,6 +86,28 @@ router.get("/achievements", async (req, res, next) => {
   try {
     var result = new Result()
     await achievements(result)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.get("/post/card/:id", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await getPostCard(result, req.params.id, req.user.id)
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
+router.put("/post/:id/vote", async (req, res, next) => {
+  try {
+    var result = new Result()
+    await setCustomerVote(result, req.user.id, req.body, req.params.id)
     res.status(result.status).send(result)
   }
   catch (error) {

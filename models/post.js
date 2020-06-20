@@ -67,6 +67,8 @@ module.exports = (sequelize, Sequelize) => {
       constraints: false
     })
 
+    post.hasMany(models.comment, { foreignKey: 'post_id' })
+
   }
 
   return post

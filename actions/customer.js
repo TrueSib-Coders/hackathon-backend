@@ -1,10 +1,7 @@
 import logger from 'logger'
-import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement, customer_post } from 'models'
-import { NotFoundError, CustomError } from 'handle-error'
+import { Sequelize, sequelize, post, customer, categories, role, major, department, achievement, customer_post, comment } from 'models'
 import moment from "moment"
-import { dataToJson, deleteFile } from 'helpers'
-import Result from 'result'
-import { getBaseUrl } from 'utils/'
+import { dataToJson } from 'helpers'
 
 const Op = Sequelize.Op;
 
@@ -68,23 +65,25 @@ export const getAllPosts = async (res, data, userId) => {
         post.image = post.image_link
         delete post.image_link
 
-        if (post.tags) {
-          let currentList = []
-          post.tags.forEach(element => {
-            categoryList.forEach(categoryDB => {
-              if (element == categoryDB.id) {
-                currentList.push(categoryDB)
-              }
-            });
+        let currentList = []
+
+        post.tags.forEach(element => {
+          categoryList.forEach(categoryDB => {
+
+
+            if (element == categoryDB.id) {
+              currentList.push(categoryDB)
+            }
           });
-          delete post.tags
-          post.tags = currentList
-        }
+        });
+
+        delete post.tags
+        post.tags = currentList
 
         if (post.department_id) {
           departmentList.forEach(departmentDB => {
             if (post.department_id == departmentDB.id) {
-              delete post.tags
+              delete post.department_id
               post.department_id = departmentDB
             }
           });
@@ -282,6 +281,87 @@ export const achievements = async (res) => {
     }
 
     res.data = achievements
+    await transaction.commit()
+    return
+  }
+  catch (error) {
+    if (transaction) {
+      await transaction.rollback()
+    }
+    throw error
+  }
+}
+
+export const getPostCard = async (res, postId, userId) => {
+
+  let postCard = await post.findOne({ where: { id: postId } })
+  postCard = dataToJson(postCard)
+
+  let customerObj = null
+  if (postCard.customer_id) {
+    customerObj = await customer.findOne({ where: { id: postCard.customer_id } })
+  }
+  customerObj = dataToJson(customerObj)
+
+  let categoryList = await categories.findAll({
+    where: {
+      id: {
+        [Op.in]: postCard.tags
+      }
+    }
+  })
+  categoryList = dataToJson(categoryList)
+
+  let departmentObject = await department.findOne({ where: { id: postCard.department_id } })
+  departmentObject = dataToJson(departmentObject)
+
+  let allvotes = await customer_post.findAll({
+    where: {
+      post_id: postCard.id
+    }
+  })
+  allvotes = dataToJson(allvotes)
+
+  let rewievs = await comment.findAll({
+    where: {
+      post_id: postCard.id
+    },
+    include: [
+      {
+        model: customer,
+        as: 'customer',
+        duplicating: false
+      }
+    ],
+    order: [['id', 'ASC']]
+  })
+  rewievs = dataToJson(rewievs)
+
+  rewievs.forEach(element => {
+    element.customer.fio = element.customer.surname + " " + element.customer.name[0] + ". " + element.customer.patronymic[0] + "."
+  });
+
+
+  postCard.tags = categoryList
+  postCard.department = departmentObject
+  postCard.allvotes = allvotes
+  postCard.rewievs = rewievs
+
+  res.data = postCard
+}
+
+export const setCustomerVote = async (res, customer_id, data, postId) => {
+  let transaction
+  try {
+    transaction = await sequelize.transaction()
+
+    const { vote } = data
+
+    let updateVote = await customer_post.findOne({ where: { post_id: postId } })
+
+    await updateVote.update({ customer_id: customer_id, post_id: postId, vote: vote }, { transaction })
+
+    res.data = updateVote
     await transaction.commit()
     return
   }

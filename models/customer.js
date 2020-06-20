@@ -103,6 +103,8 @@ module.exports = (sequelize, Sequelize) => {
       constraints: false
     })
 
+    customer.hasMany(models.comment, { foreignKey: 'customer_id'})
+
   }
 
   return customer
