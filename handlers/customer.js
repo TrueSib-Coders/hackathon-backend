@@ -115,4 +115,52 @@ router.put("/post/:id/vote", async (req, res, next) => {
   }
 })
 
+router.get("/profile/icons", async (req, res, next) => {
+  try {
+    var result = new Result()
+    result.data = [
+      {
+        "icon": "mdi-text-box-plus-outline",
+        "count": 12,
+        "title": "идей предложено",
+        "description": "за последний месяц"
+      },
+      {
+        "icon": "mdi-chevron-up",
+        "count": 37,
+        "title": "оценок",
+        "description": "за последние две недели"
+      },
+      {
+        "icon": "mdi-comment-processing-outline",
+        "count": 7,
+        "title": "комментариев",
+        "description": "за последнюю неделю"
+      },
+      {
+        "icon": "mdi-star-outline",
+        "count": 2,
+        "title": "уровня",
+        "description": "за последний месяц"
+      },
+      {
+        "icon": "mdi-trophy-outline",
+        "count": 1,
+        "title": "достижение",
+        "description": "за последний месяц"
+      },
+      {
+        "icon": "mdi-clock-time-four-outline",
+        "count": 6,
+        "title": "часов на портале",
+        "description": "за неделю"
+      }
+    ]
+    res.status(result.status).send(result)
+  }
+  catch (error) {
+    next(error)
+  }
+})
+
 module.exports = router
