@@ -1,0 +1,27 @@
+{
+  "presets": ["@babel/preset-env"],
+  "plugins": [
+    ["@babel/transform-runtime"],
+    ["@babel/plugin-proposal-optional-chaining"],
+    ["@babel/plugin-proposal-nullish-coalescing-operator"],
+    [
+      "module-resolver",
+      {
+        "alias": {
+          "actions": "./actions",
+          "handlers": "./handlers",
+          "utils": "./utils",
+          "helpers": "./utils/helpers",
+          "models": "./models",
+          "validators": "./validators",
+          "config": "./config",
+          "result": "./utils/result",
+          "logger": "./utils/logger",
+          "handle-error": "./utils/errorHandler",
+          "services": "./services",
+          "auth": "./auth"
+        }
+      }
+    ]
+  ]
+}

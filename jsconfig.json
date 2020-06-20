@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./",
+    "noImplicitAny": false,
+    "paths": {
+      "actions/*": ["actions/*"],
+      "handlers/*": ["handlers/*"],
+      "utils/*": ["utils/*"],
+      "helpers": ["utils/helpers"],
+      "models/*": ["models/*"],
+      "validators/*": ["validators/*"],
+      "config/*": ["config/*"],
+      "result": ["utils/result"],
+      "logger": ["utils/logger"],
+      "handle-error": ["utils/errorHandler"],
+      "auth/*": ["auth/*"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    ".git"
+  ]
+}

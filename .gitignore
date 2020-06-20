@@ -1,0 +1,8 @@
+/node_modules
+/.vscode
+/.eslintrc
+/public/uploads
+/debug
+/logs
+/config/config.json
+.DS_Store
